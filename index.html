@@ -9,23 +9,22 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
     <style>
-        /* カスタムスクロールバーのスタイリング（PC用） */
+        /* 横スクロールバーのスタイリング */
         .custom-scrollbar::-webkit-scrollbar {
             height: 6px;
         }
 
         .custom-scrollbar::-webkit-scrollbar-track {
-            background: rgba(30, 41, 59, 0.5);
-            border-radius: 999px;
+            background: rgba(15, 23, 42, 0.6);
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb {
-            background: rgba(99, 102, 241, 0.5);
+            background: rgba(99, 102, 241, 0.4);
             border-radius: 999px;
         }
 
         .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-            background: rgba(99, 102, 241, 0.8);
+            background: rgba(99, 102, 241, 0.7);
         }
     </style>
 </head>
@@ -37,26 +36,19 @@
         class="fixed top-0 left-0 w-full bg-slate-900/80 backdrop-blur-md shadow-lg z-50 p-4 flex justify-between items-center border-b border-slate-800">
         <div>
             <h1 class="text-xl md:text-2xl font-black text-indigo-400 tracking-wider">CHRONO-LINK</h1>
-            <p class="text-[10px] md:text-xs text-slate-400">縦スクロールで時をたどり、ボタンを押して横に知識を拡張する</p>
-        </div>
-        <div
-            class="text-[10px] md:text-xs bg-slate-800 px-3 py-1.5 rounded-xl border border-slate-700 text-slate-400 font-mono">
-            PC: 縦ホイールで横スク / スマホ: スワイプ
+            <p class="text-xs text-slate-400">下へスクロールし、ボタンでページを横に大拡張する</p>
         </div>
     </header>
 
     <main id="timeline-main"
-        class="container mx-auto max-w-4xl mt-36 px-4 relative before:absolute before:top-0 before:bottom-0 before:left-8 before:w-0.5 before:bg-gradient-to-b before:from-indigo-500 before:to-purple-600 before:opacity-30">
+        class="container mx-auto max-w-3xl mt-36 px-4 relative before:absolute before:top-0 before:bottom-0 before:left-8 before:w-0.5 before:bg-indigo-500/20">
     </main>
 
     <script>
         gsap.registerPlugin(Flip);
 
-        // ==========================================
-        // 💾 【要件クリア】完全に独立化したプロ仕様のJSONデータ構造
-        // ==========================================
+        // 独立ノード型データ構造
         const CHRONO_DB = {
-            // 歴史の出来事（メイン縦軸）
             events: [
                 {
                     id: "ev_thales",
@@ -64,7 +56,7 @@
                     title: "タレス、万物の根源を「水」とする",
                     description: "神話的な解釈を完全に排し、自然そのものの原因を人間の理性によって説明しようとした大転換点。これがすべての学問のスタートラインとなった。",
                     tags: ["philosophy", "math"],
-                    rootNodes: ["node_thales_phil", "node_thales_math"] // 展開時のスタートノードID
+                    rootNodes: ["node_thales_phil", "node_thales_math"]
                 },
                 {
                     id: "ev_pythagoras",
@@ -75,14 +67,12 @@
                     rootNodes: ["node_pyth_math"]
                 }
             ],
-
-            // 独立した連携情報ノード（マインドマップ構造）
             nodes: {
                 "node_thales_phil": {
                     title: "🏛️ 哲学へのリンク：自然哲学の祖",
                     description: "「神の気まぐれ」ではなく、ロゴス（理性）によって世界のルールを解き明かそうとする『自然哲学』の源流となりました。",
                     tags: ["philosophy", "logos"],
-                    nextNodes: ["node_thales_to_pyth"] // 連結リストとして数珠繋ぎにする
+                    nextNodes: ["node_thales_to_pyth"]
                 },
                 "node_thales_math": {
                     title: "📐 数学へのリンク：幾何学の証明",
@@ -96,15 +86,9 @@
                     tags: ["history", "connection"],
                     nextNodes: []
                 },
-                "node_thal_math_deep": {
-                    title: "🧪 科学へのリンク：日食の予言",
-                    description: "天体の運行にも法則があると見抜き、紀元前に日食を正確に予言して人々を驚かせました。",
-                    tags: ["science", "astronomy"],
-                    nextNodes: []
-                },
                 "node_pyth_math": {
                     title: "📐 数学へのリンク：ピタゴラスの定理",
-                    description: "直角三角形の「$a^2 + b^2 = c^2$」を発見。数それ自体を神聖視し、宇宙の真理だと信じました。",
+                    description: "直角三角形の「a² + b² = c²」を発見。数それ自体を神聖視し、宇宙の真理だと信じました。",
                     tags: ["math", "geometry"],
                     nextNodes: ["node_pyth_music", "node_pyth_cosmos"]
                 },
@@ -123,9 +107,6 @@
             }
         };
 
-        // ==========================================
-        // 🛠️ 【パフォーマンス最適化】動的DOM生成 ＆ レンダリング
-        // ==========================================
         const mainContainer = document.getElementById('timeline-main');
 
         function initTimeline() {
@@ -136,7 +117,7 @@
                     <article class="timeline-item relative mb-24 pl-12 w-full" id="${ev.id}">
                         <div class="absolute left-8 w-4 h-4 bg-indigo-500 rounded-full border-4 border-slate-900 -translate-x-1.5 z-10 shadow-[0_0_10px_rgba(99,102,241,0.8)]"></div>
                         
-                        <section class="w-full max-w-2xl bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-slate-700/50 p-6 transition-all duration-300 hover:border-slate-600">
+                        <section class="w-full max-w-xl bg-slate-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-slate-700/50 p-6 transition-all duration-300 hover:border-slate-600">
                             <div class="flex items-center justify-between gap-4 mb-4">
                                 <div class="flex items-center gap-3">
                                     <span class="bg-indigo-950/80 text-indigo-300 text-xs font-bold px-3 py-1 rounded-lg border border-indigo-800/50">${ev.time}</span>
@@ -150,11 +131,11 @@
                             </div>
                             <h3 class="text-xl md:text-2xl font-black text-white mb-2 tracking-wide">${ev.title}</h3>
                             <p class="text-slate-400 text-sm leading-relaxed">${ev.description}</p>
-
-                            <aside class="mindmap-container hidden w-full border-t border-slate-700/50 pt-5 mt-5 overflow-x-auto custom-scrollbar">
-                                <div class="mindmap-track flex items-center gap-5 pb-3 w-max"></div>
-                            </aside>
                         </section>
+
+                        <aside class="mindmap-container hidden w-screen relative left-1/2 right-1/2 -translate-x-1/2 bg-slate-950/70 backdrop-blur-md border-y border-indigo-500/20 py-6 mt-6 overflow-x-auto custom-scrollbar z-20">
+                            <div class="mindmap-track flex items-center gap-6 pl-16 pr-12 w-max"></div>
+                        </aside>
                     </article>
                 `;
             });
@@ -162,9 +143,7 @@
             mainContainer.innerHTML = htmlBuffer;
         }
 
-        // ==========================================
-        // 🔄 【連結リスト追跡】ボタンを押した瞬間にノードを数珠繋ぎに生成
-        // ==========================================
+        // 連結リストからノードを生成
         function buildMindmapHTML(rootNodeIds) {
             let html = '';
 
@@ -172,42 +151,41 @@
                 let currentId = rootId;
                 let isFirstOfBranch = true;
 
-                // 連結リスト（nextNodes）を奥深くへパトロールするループ
+                // 複数ルートが並行して走る構造に対応
+                html += `<div class="flex items-center gap-4 border-r border-slate-800/50 pr-6 last:border-0">`;
+
                 while (currentId && CHRONO_DB.nodes[currentId]) {
                     const node = CHRONO_DB.nodes[currentId];
 
-                    // 2個目以降の結合には、マインドマップを象徴する矢印ノードを挟む
                     if (!isFirstOfBranch) {
-                        html += `<span class="text-2xl text-indigo-500 font-black shrink-0 px-1 select-none animate-pulse">➔</span>`;
+                        html += `<span class="text-2xl text-indigo-500 font-black shrink-0 px-1 select-none">➔</span>`;
                     }
 
                     html += `
-                        <div class="bg-slate-900/90 border-2 border-indigo-500/30 hover:border-indigo-400 p-5 rounded-2xl min-w-[290px] max-w-[340px] shadow-inner transition-all duration-300">
+                        <div class="bg-slate-900/90 border border-slate-700/60 hover:border-indigo-500/50 p-5 rounded-2xl min-w-[280px] max-w-[320px] shadow-2xl transition-all duration-300 transform hover:-translate-y-1">
                             <div class="flex gap-1 mb-2">
-                                ${node.tags.map(t => `<span class="bg-indigo-950 text-indigo-300 text-[10px] px-2 py-0.5 rounded-md font-mono border border-indigo-900">#${t}</span>`).join('')}
+                                ${node.tags.map(t => `<span class="bg-indigo-950 text-indigo-400 text-[10px] px-2 py-0.5 rounded-md font-mono border border-indigo-900/40">#${t}</span>`).join('')}
                             </div>
-                            <h4 class="font-extrabold text-base md:text-lg text-white mb-2 tracking-wide">${node.title}</h4>
-                            <p class="text-slate-300 text-xs md:text-sm leading-relaxed">${node.description}</p>
+                            <h4 class="font-bold text-base md:text-lg text-white mb-1.5 tracking-wide">${node.title}</h4>
+                            <p class="text-slate-400 text-xs md:text-sm leading-relaxed">${node.description}</p>
                         </div>
                     `;
 
                     isFirstOfBranch = false;
 
-                    // 次のノードのIDへ進む（なければnullになりループ終了）
                     if (node.nextNodes && node.nextNodes.length > 0) {
-                        currentId = node.nextNodes[0]; // 今回は一本道の連結リストとして追跡
+                        currentId = node.nextNodes[0];
                     } else {
                         currentId = null;
                     }
                 }
+                html += `</div>`; // ルート終了
             });
 
             return html;
         }
 
-        // ==========================================
-        // 🎬 【GSAP Flip】劇的ビジュアル変化 ＆ 開閉ロジック
-        // ==========================================
+        // GSAP Flipによる拡張アニメーション
         function toggleMindmap(eventId) {
             const article = document.getElementById(eventId);
             const container = article.querySelector('.mindmap-container');
@@ -215,55 +193,48 @@
             const button = article.querySelector('.trigger-btn');
             const eventData = CHRONO_DB.events.find(e => e.id === eventId);
 
-            // GSAP Flipでアニメーション前の状態をパシャリと記録
             const state = Flip.getState(container);
 
             if (container.classList.contains('hidden')) {
-                // 【最適化】開くその瞬間に初めてHTMLを組み立てて流し込む（メモリ超節約）
+                // 開く瞬間にノードを生成
                 track.innerHTML = buildMindmapHTML(eventData.rootNodes);
 
                 container.classList.remove('hidden');
                 button.innerHTML = '<span>繋がりを閉じる</span> ✖';
                 button.classList.replace('bg-indigo-600', 'bg-slate-700');
 
-                // ➔ 【PC＆スマホ両対応】PC用の縦ホイール➔横スクロールの仕込みを実行
+                // PCホイール最適化
                 setupHorizontalWheel(container);
 
-                // 横にニュッと拡張される超滑らかアニメーション発火
                 Flip.from(state, {
-                    duration: 0.45,
+                    duration: 0.4,
                     ease: "power2.out",
                     scale: true,
                     simple: true
                 });
             } else {
-                // 閉じる処理
                 container.classList.add('hidden');
                 button.innerHTML = '<span>学問の繋がりを展開</span> ➔';
                 button.classList.replace('bg-slate-700', 'bg-indigo-600');
 
-                // 【最適化】閉じたら中身のDOMを即座に消去し、ブラウザを軽く保つ
-                setTimeout(() => { track.innerHTML = ''; }, 450);
+                setTimeout(() => { track.innerHTML = ''; }, 400);
             }
         }
 
-        // ==========================================
-        // 🔄 【PC＆スマホ両対応】マウスの縦回転を横スクロールに化けさせる魔法
-        // ==========================================
+        // 縦ホイール ➔ 横スクロール変換（PC用）
         function setupHorizontalWheel(element) {
-            if (element.dataset.wheelSet === "true") return; // 重複登録を完璧にガード
+            if (element.dataset.wheelSet === "true") return;
 
             element.addEventListener('wheel', (e) => {
                 if (e.deltaY !== 0) {
-                    e.preventDefault(); // 本来の画面全体の縦スクロールを一時停止
-                    element.scrollLeft += e.deltaY * 1.2; // 縦の回転量をそのまま横のスクロール量へ変換（1.2倍でキビキビ動かす）
+                    e.preventDefault();
+                    element.scrollLeft += e.deltaY * 1.2;
                 }
-            }, { passive: false }); // 制御奪取のために必須のオプション
+            }, { passive: false });
 
             element.dataset.wheelSet = "true";
         }
 
-        // 初期化実行
         initTimeline();
     </script>
 </body>
