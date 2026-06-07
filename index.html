@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHRONO-LINK | 歴史×学問連携デジタル年表</title>
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/Flip.min.js"></script>
+    <style>
+        /* 内側から外側へ、あるいは外側から内側へ滑らかに開くための設定 */
+        .drawer {
+            transition: max-width 0.4s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.25s linear;
+        }
+    </style>
+</head>
+
+<body class="bg-slate-900 text-slate-100 font-sans min-h-screen pb-96 selection:bg-indigo-500 selection:text-white">
+
+    <header
+        class="fixed top-0 left-0 w-full bg-slate-900/80 backdrop-blur-md shadow-lg z-50 p-4 flex justify-between items-center border-b border-slate-800">
+        <div>
+            <h1 class="text-xl font-black text-indigo-400 tracking-wider">CHRONO-LINK</h1>
+            <p class="text-[10px] text-slate-400">縦スクロールで時をたどり、ボタンから学問の繋がりを紐解く</p>
+        </div>
+
+        <div class="relative">
+            <button id="filterBtn"
+                class="bg-indigo-600 text-white px-5 py-2 rounded-xl hover:bg-indigo-500 font-medium shadow-md transition-all duration-200 text-sm">
+                🔍 フィルターを開く
+            </button>
+            <div id="filterWindow"
+                class="hidden absolute right-0 mt-3 w-64 bg-slate-800 border border-slate-700 rounded-2xl shadow-2xl p-5 z-50">
+                <p class="font-bold mb-3 text-xs text-slate-400 uppercase tracking-wider">表示する学問を絞り込み</p>
+                <label
+                    class="flex items-center space-x-3 mb-3 pb-3 border-b border-slate-700 font-bold text-sm cursor-pointer text-indigo-400">
+                    <input type="checkbox" id="selectAll"
+                        class="w-4 h-4 rounded bg-slate-900 border-slate-600 text-indigo-600" checked>
+                    <span>🌟 すべて選択 / 解除</span>
+                </label>
+                <div class="space-y-2.5 text-sm font-medium text-slate-300">
+                    <label class="flex items-center space-x-3 cursor-pointer hover:text-indigo-400 transition">
+                        <input type="checkbox" value="math"
+                            class="tag-checkbox w-4 h-4 rounded bg-slate-900 border-slate-600 text-indigo-600" checked>
+                        <span>📐 数学 / 幾何学</span>
+                    </label>
+                    <label class="flex items-center space-x-3 cursor-pointer hover:text-indigo-400 transition">
+                        <input type="checkbox" value="philosophy"
+                            class="tag-checkbox w-4 h-4 rounded bg-slate-900 border-slate-600 text-indigo-600" checked>
+                        <span>🏛️ 哲学 / 思想</span>
+                    </label>
+                    <label class="flex items-center space-x-3 cursor-pointer hover:text-indigo-400 transition">
+                        <input type="checkbox" value="science"
+                            class="tag-checkbox w-4 h-4 rounded bg-slate-900 border-slate-600 text-indigo-600" checked>
+                        <span>🧪 科学 / 天文学</span>
+                    </label>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main
+        class="container mx-auto max-w-5xl mt-40 px-4 relative before:absolute before:top-0 before:bottom-0 before:left-4 md:before:left-1/2 before:w-0.5 before:bg-gradient-to-b before:from-indigo-500 before:via-purple-500 before:to-pink-500 before:opacity-30">
+
+        <div class="timeline-item relative mb-32 flex flex-col md:flex-row md:justify-between items-start md:items-center w-full"
+            data-tags="math philosophy">
+            <div
+                class="absolute left-4 md:left-1/2 w-4 h-4 bg-indigo-500 rounded-full border-4 border-slate-900 -translate-x-1.5 z-10 shadow-[0_0_10px_rgba(99,102,241,0.8)]">
+            </div>
+
+            <div
+                class="w-full md:w-[45%] bg-slate-800/60 backdrop-blur-sm rounded-2xl shadow-xl border border-slate-700/50 p-6 ml-8 md:ml-0">
+                <div class="flex items-center gap-2 mb-3">
+                    <span
+                        class="bg-indigo-900/60 text-indigo-300 text-xs font-bold px-2.5 py-1 rounded-md border border-indigo-700/40">BC
+                        6世紀頃</span>
+                    <span class="text-xs text-slate-400">#数学</span>
+                    <span class="text-xs text-slate-400">#哲学</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">タレス、万物の根源を「水」とする</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">神話的な解釈を完全に排し、自然そのものの原因を人間の理性によって説明しようとした大転換点。</p>
+            </div>
+
+            <div class="w-full md:w-[45%] flex items-center mt-4 md:mt-0 pl-8 md:pl-0 justify-start relative h-12">
+                <button
+                    class="toggle-drawer-btn bg-slate-800 hover:bg-indigo-600 border border-slate-700 text-slate-400 hover:text-white w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all duration-200 shrink-0 shadow-md z-30 absolute left-0"
+                    data-direction="left">＞</button>
+
+                <div
+                    class="drawer max-w-0 opacity-0 overflow-hidden bg-slate-800 border border-transparent rounded-xl text-slate-200 absolute left-14 top-1/2 -translate-y-1/2 z-20 pointer-events-none shadow-2xl">
+                    <div class="w-64 p-4 text-xs leading-relaxed">
+                        <p class="font-bold text-sm border-b border-indigo-500/30 pb-1.5 mb-2 text-indigo-400">💡
+                            他学問との連携</p>
+                        <strong class="text-indigo-300">【数学】</strong>「半円に内接する角は直角である」などの幾何学の定理を証明。<br class="mb-1">
+                        <strong class="text-indigo-300">【哲学】</strong>自然を客観的に観察する「自然哲学」の源流となった。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="timeline-item relative mb-32 flex flex-col md:flex-row md:justify-between items-start md:items-center w-full"
+            data-tags="math">
+            <div
+                class="absolute left-4 md:left-1/2 w-4 h-4 bg-indigo-500 rounded-full border-4 border-slate-900 -translate-x-1.5 z-10 shadow-[0_0_10px_rgba(99,102,241,0.8)]">
+            </div>
+
+            <div
+                class="w-full md:w-[45%] bg-slate-800/60 backdrop-blur-sm rounded-2xl shadow-xl border border-slate-700/50 p-6 ml-8 md:ml-0 md:order-2">
+                <div class="flex items-center gap-2 mb-3">
+                    <span
+                        class="bg-indigo-900/60 text-indigo-300 text-xs font-bold px-2.5 py-1 rounded-md border border-indigo-700/40">BC
+                        6世紀末</span>
+                    <span class="text-xs text-slate-400">#数学</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">ピタゴラス学派の結成</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">「万物は数である」と唱え、世界のあらゆる秩序は数的な比例関係によって成り立っていると考えた思想集団。</p>
+            </div>
+
+            <div
+                class="w-full md:w-[45%] flex items-center mt-4 md:mt-0 pl-8 md:pl-0 justify-start relative h-12 md:order-1">
+                <div
+                    class="drawer max-w-0 opacity-0 overflow-hidden bg-slate-800 border border-transparent rounded-xl text-slate-200 absolute right-14 top-1/2 -translate-y-1/2 z-20 pointer-events-none shadow-2xl">
+                    <div class="w-64 p-4 text-xs leading-relaxed">
+                        <p class="font-bold text-sm border-b border-indigo-500/30 pb-1.5 mb-2 text-indigo-400">💡
+                            他学問との連携</p>
+                        <strong class="text-indigo-300">【音楽】</strong>弦の長さの比率と音程の調和を発見。世界で初めて「音楽を数理的に解析」した。
+                    </div>
+                </div>
+                <button
+                    class="toggle-drawer-btn bg-slate-800 hover:bg-indigo-600 border border-slate-700 text-slate-400 hover:text-white w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all duration-200 shrink-0 shadow-md z-30 absolute right-0"
+                    data-direction="right">＜</button>
+            </div>
+        </div>
+
+        <div class="timeline-item relative mb-32 flex flex-col md:flex-row md:justify-between items-start md:items-center w-full"
+            data-tags="math science">
+            <div
+                class="absolute left-4 md:left-1/2 w-4 h-4 bg-purple-500 rounded-full border-4 border-slate-900 -translate-x-1.5 z-10 shadow-[0_0_10px_rgba(168,85,247,0.8)]">
+            </div>
+
+            <div
+                class="w-full md:w-[45%] bg-slate-800/60 backdrop-blur-sm rounded-2xl shadow-xl border border-slate-700/50 p-6 ml-8 md:ml-0">
+                <div class="flex items-center gap-2 mb-3">
+                    <span
+                        class="bg-purple-900/60 text-purple-300 text-xs font-bold px-2.5 py-1 rounded-md border border-purple-700/40">9世紀頃</span>
+                    <span class="text-xs text-slate-400">#数学</span>
+                    <span class="text-xs text-slate-400">#科学</span>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-2">アル＝フワリズミと「知恵の館」</h3>
+                <p class="text-slate-400 text-sm leading-relaxed">ギリシャやインドの文献を翻訳・融合し、現代のコンピュータの根幹である「アルゴリズム」の語源となった大数学者。
+                </p>
+            </div>
+
+            <div class="w-full md:w-[45%] flex items-center mt-4 md:mt-0 pl-8 md:pl-0 justify-start relative h-12">
+                <button
+                    class="toggle-drawer-btn bg-slate-800 hover:bg-purple-600 border border-slate-700 text-slate-400 hover:text-white w-10 h-10 rounded-full flex items-center justify-center font-bold transition-all duration-200 shrink-0 shadow-md z-30 absolute left-0"
+                    data-direction="left">＞</button>
+                <div
+                    class="drawer max-w-0 opacity-0 overflow-hidden bg-slate-800 border border-transparent rounded-xl text-slate-200 absolute left-14 top-1/2 -translate-y-1/2 z-20 pointer-events-none shadow-2xl">
+                    <div class="w-64 p-4 text-xs leading-relaxed">
+                        <p class="font-bold text-sm border-b border-purple-500/30 pb-1.5 mb-2 text-purple-400">💡
+                            他学問との連携</p>
+                        <strong class="text-purple-300">【天文学】</strong>インドの数理天文学を学び、正確な「天文表（ズィージュ）」を作成。これが航海術の貴重なデータとなった。
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        gsap.registerPlugin(ScrollTrigger, Flip);
+
+        // フィルターウィンドウの開閉
+        const filterBtn = document.getElementById('filterBtn');
+        const filterWindow = document.getElementById('filterWindow');
+        filterBtn.addEventListener('click', () => filterWindow.classList.toggle('hidden'));
+
+        // 【大修正】：ボタンの向き・位置に合わせた開閉ロジック
+        const toggleButtons = document.querySelectorAll('.toggle-drawer-btn');
+        toggleButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                const direction = button.getAttribute('data-direction');
+                // 左ボタンなら「次（右）」の要素、右ボタンなら「前（左）」の要素がdrawerになる
+                const drawer = (direction === 'left') ? button.nextElementSibling : button.previousElementSibling;
+
+                if (drawer.classList.contains('max-w-0')) {
+                    // 開く処理
+                    drawer.classList.remove('max-w-0', 'opacity-0', 'pointer-events-none', 'border-transparent');
+                    drawer.classList.add('max-w-xs', 'opacity-100', 'border-slate-700', 'p-1');
+                    button.textContent = (direction === 'left') ? '＜' : '＞'; // 展開後は向きを逆転
+                } else {
+                    // 閉じ処理
+                    drawer.classList.remove('max-w-xs', 'opacity-100', 'border-slate-700', 'p-1');
+                    drawer.classList.add('max-w-0', 'opacity-0', 'pointer-events-none', 'border-transparent');
+                    button.textContent = (direction === 'left') ? '＞' : '＜'; // 初期状態に戻す
+                }
+            });
+        });
+
+        // フィルター＆FLIPシステム
+        const selectAllCheckbox = document.getElementById('selectAll');
+        const tagCheckboxes = document.querySelectorAll('.tag-checkbox');
+
+        function filterTimeline() {
+            const activeTags = Array.from(document.querySelectorAll('.tag-checkbox:checked')).map(cb => cb.value);
+            const timelineItems = document.querySelectorAll('.timeline-item');
+
+            const state = Flip.getState(timelineItems);
+
+            timelineItems.forEach(item => {
+                const itemTags = item.getAttribute('data-tags').split(' ');
+                const isVisible = itemTags.some(tag => activeTags.includes(tag));
+
+                if (isVisible) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+
+            Flip.from(state, {
+                duration: 0.5,
+                ease: "power3.out",
+                absolute: true,
+                onComplete: () => { ScrollTrigger.refresh(); }
+            });
+        }
+
+        selectAllCheckbox.addEventListener('change', () => {
+            tagCheckboxes.forEach(cb => cb.checked = selectAllCheckbox.checked);
+            filterTimeline();
+        });
+
+        tagCheckboxes.forEach(cb => {
+            cb.addEventListener('change', () => {
+                selectAllCheckbox.checked = Array.from(tagCheckboxes).every(c => c.checked);
+                filterTimeline();
+            });
+        });
+
+        // スクリブルアニメーション
+        document.querySelectorAll('.timeline-item').forEach(item => {
+            gsap.from(item, {
+                opacity: 0,
+                y: 80,
+                scale: 0.95,
+                duration: 1.2,
+                scrollTrigger: {
+                    trigger: item,
+                    start: "top 92%",
+                    end: "top 65%",
+                    scrub: 1.2,
+                    toggleActions: "play none none reverse"
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>
